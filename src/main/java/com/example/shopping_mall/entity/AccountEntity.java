@@ -3,10 +3,7 @@ package com.example.shopping_mall.entity;
 import com.example.shopping_mall.dto.account.request.SignupRequestDto;
 import com.example.shopping_mall.entity.enums.AccountType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -63,6 +60,11 @@ public class AccountEntity extends BaseEntity implements UserDetails{
     public static AccountEntity toEntity(SignupRequestDto signupRequestDto) {
         return new AccountEntity(signupRequestDto);
     }
+
+    public void settingProductEntity(ProductEntity productEntity) {
+        this.productEntity.add(productEntity);
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

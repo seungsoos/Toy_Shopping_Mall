@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "tb_product_order")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductOrderEntity extends BaseEntity {
 
@@ -24,4 +26,5 @@ public class ProductOrderEntity extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_id")
     private OrderEntity orderEntity;
+
 }

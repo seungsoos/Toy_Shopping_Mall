@@ -26,16 +26,4 @@ public class AccountController {
         accountService.signup(signupRequestDto);
     }
 
-
-    @GetMapping("/{loginId}/id")
-    public void findId(@PathVariable String loginId) {
-
-    }
-
-
-    @PostMapping("/{loginId}/password/reset")
-    public void findPassword(@PathVariable String loginId) {
-
-    }
-
 }

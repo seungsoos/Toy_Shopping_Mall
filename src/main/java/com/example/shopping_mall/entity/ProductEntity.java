@@ -1,12 +1,11 @@
 package com.example.shopping_mall.entity;
 
+import com.example.shopping_mall.dto.product.ProductCreateDto;
+import com.example.shopping_mall.dto.product.ProductUpdateDto;
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,4 +48,41 @@ public class ProductEntity extends BaseEntity {
 
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "productEntity")
     private List<ProductOrderEntity> productOrderEntityList = new ArrayList<>();
+
+    @Builder
+    public ProductEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String imageUrl) {
+        this.brandName = productCreateDto.getBrandName();
+        this.name = productCreateDto.getName();
+        this.productType = productCreateDto.getProductType();
+        this.quantity = productCreateDto.getQuantity();
+        this.information = productCreateDto.getInformation();
+        this.accountEntity = accountEntity;
+        this.imageUrl = imageUrl;
+    }
+
+    public static ProductEntity toEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String imageUrl) {
+        return new ProductEntity(productCreateDto, accountEntity, imageUrl);
+    }
+
+    public void settingAccountEntity(AccountEntity accountEntity) {
+        this.accountEntity = accountEntity;
+        accountEntity.settingProductEntity(this);
+
+    }
+
+    public void settingProductOrderEntity(ProductOrderEntity productOrderEntity) {
+        productOrderEntity.setProductEntity(this);
+        this.productOrderEntityList.add(productOrderEntity);
+
+    }
+
+
+    public void update(ProductUpdateDto productUpdateDto, String imageUrl) {
+        this.brandName = productUpdateDto.getBrandName();
+        this.name = productUpdateDto.getName();
+        this.productType = productUpdateDto.getProductType();
+        this.quantity = productUpdateDto.getQuantity();
+        this.information = productUpdateDto.getInformation();
+        this.imageUrl = imageUrl;
+    }
 }
