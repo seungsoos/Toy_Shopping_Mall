@@ -1,6 +1,6 @@
 package com.example.shopping_mall.entity;
 
-import com.example.shopping_mall.dto.account.request.SignupRequestDto;
+import com.example.shopping_mall.dto.account.request.AccountSignupDto;
 import com.example.shopping_mall.entity.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,7 +39,7 @@ public class AccountEntity extends BaseEntity implements UserDetails{
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @OneToMany(fetch = LAZY,cascade = ALL, mappedBy = "accountEntity", orphanRemoval = true)
+    @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "accountEntity", orphanRemoval = true)
     private List<ProductEntity> productEntity = new ArrayList<>();
 
     @Builder
@@ -49,16 +49,16 @@ public class AccountEntity extends BaseEntity implements UserDetails{
         this.accountType = accountType;
     }
 
-    public AccountEntity(SignupRequestDto signupRequestDto) {
-        this.loginId = signupRequestDto.getLoginId();
-        this.email = signupRequestDto.getEmail();
-        this.password = signupRequestDto.getPassword();
-        this.nickName = signupRequestDto.getNickName();
-        this.accountType = signupRequestDto.getAccountType();
+    public AccountEntity(AccountSignupDto accountSignupDto) {
+        this.loginId = accountSignupDto.getLoginId();
+        this.email = accountSignupDto.getEmail();
+        this.password = accountSignupDto.getPassword();
+        this.nickName = accountSignupDto.getNickName();
+        this.accountType = accountSignupDto.getAccountType();
     }
 
-    public static AccountEntity toEntity(SignupRequestDto signupRequestDto) {
-        return new AccountEntity(signupRequestDto);
+    public static AccountEntity toEntity(AccountSignupDto accountSignupDto) {
+        return new AccountEntity(accountSignupDto);
     }
 
     public void settingProductEntity(ProductEntity productEntity) {

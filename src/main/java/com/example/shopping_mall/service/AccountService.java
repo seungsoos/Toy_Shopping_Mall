@@ -1,14 +1,16 @@
 package com.example.shopping_mall.service;
 
 import com.example.shopping_mall.config.security.jwt.JwtToken;
-import com.example.shopping_mall.dto.account.request.LoginRequestDto;
-import com.example.shopping_mall.dto.account.request.SignupRequestDto;
+import com.example.shopping_mall.dto.account.request.AccountDeleteDto;
+import com.example.shopping_mall.dto.account.request.AccountLoginDto;
+import com.example.shopping_mall.dto.account.request.AccountSignupDto;
 
 
 public interface AccountService {
 
+    JwtToken login(AccountLoginDto accountLoginDto);
 
-    JwtToken login(LoginRequestDto loginRequestDto);
+    void signup(AccountSignupDto accountSignupDto);
 
-    void signup(SignupRequestDto signupRequestDto);
+    void delete(AccountDeleteDto deleteRequestDto);
 }

@@ -4,8 +4,9 @@ import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
 import com.example.shopping_mall.config.security.jwt.JwtToken;
 import com.example.shopping_mall.config.security.jwt.JwtTokenProvider;
-import com.example.shopping_mall.dto.account.request.LoginRequestDto;
-import com.example.shopping_mall.dto.account.request.SignupRequestDto;
+import com.example.shopping_mall.dto.account.request.AccountDeleteDto;
+import com.example.shopping_mall.dto.account.request.AccountLoginDto;
+import com.example.shopping_mall.dto.account.request.AccountSignupDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class AccountServiceImpl implements AccountService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional(readOnly = true)
-    public JwtToken login(LoginRequestDto loginRequestDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getLoginId(), loginRequestDto.getPassword());
+    public JwtToken login(AccountLoginDto accountLoginDto) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(accountLoginDto.getLoginId(), accountLoginDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         return jwtTokenProvider.generateToken(authentication);
@@ -37,29 +38,38 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional
-    public void signup(SignupRequestDto signupRequestDto) {
-        validateSignUpRequest(signupRequestDto);
+    public void signup(AccountSignupDto accountSignupDto) {
+        validateSignUpRequest(accountSignupDto);
 
-        String encodePassword = passwordEncoder.encode(signupRequestDto.getPassword());
-        signupRequestDto.passwordEncoding(encodePassword);
+        String encodePassword = passwordEncoder.encode(accountSignupDto.getPassword());
+        accountSignupDto.passwordEncoding(encodePassword);
 
-        AccountEntity accountEntity = AccountEntity.toEntity(signupRequestDto);
+        AccountEntity accountEntity = AccountEntity.toEntity(accountSignupDto);
         log.info("accountEntity = {}", accountEntity);
 
         accountRepository.save(accountEntity);
     }
 
-    private void validateSignUpRequest(SignupRequestDto signupRequestDto) {
+    @Override
+    public void delete(AccountDeleteDto deleteRequestDto) {
+        String loginId = deleteRequestDto.getLoginId();
+        AccountEntity accountEntity = accountRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+        accountRepository.delete(accountEntity);
+    }
 
-        if (accountRepository.existsByLoginId(signupRequestDto.getLoginId())) {
+
+    private void validateSignUpRequest(AccountSignupDto accountSignupDto) {
+
+        if (accountRepository.existsByLoginId(accountSignupDto.getLoginId())) {
             throw new RootException(ResultCodeType.SERVER_ERROR_EXISTS_LOGIN_ID);
         }
 
-        if (accountRepository.existsByEmail(signupRequestDto.getEmail())) {
+        if (accountRepository.existsByEmail(accountSignupDto.getEmail())) {
             throw new RootException(ResultCodeType.SERVER_ERROR_EXISTS_EMAIL);
         }
 
-        if (accountRepository.existsByNickName(signupRequestDto.getNickName())) {
+        if (accountRepository.existsByNickName(accountSignupDto.getNickName())) {
             throw new RootException(ResultCodeType.SERVER_ERROR_EXISTS_NICK_NAME);
         }
     }
