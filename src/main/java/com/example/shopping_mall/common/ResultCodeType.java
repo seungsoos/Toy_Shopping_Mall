@@ -13,7 +13,8 @@ public enum ResultCodeType {
     SERVER_ERROR_4S000000("4S000000", "비정상적인 요청"),
     SERVER_ERROR_EXISTS_LOGIN_ID("4S000001", "이미 존재하는 아이디 입니다."),
     SERVER_ERROR_EXISTS_EMAIL("4S000002", "이미 존재하는 이메일 입니다."),
-    SERVER_ERROR_EXISTS_NICK_NAME("4S000003", "이미 존재하는 닉네임 입니다.");
+    SERVER_ERROR_EXISTS_NICK_NAME("4S000003", "이미 존재하는 닉네임 입니다."),
+    SERVER_ERROR_LOGIN_ID_NOT_EQUALS("4S000004", "존재하지 않는 아이디입니다.");
 
 
     private final String code;
