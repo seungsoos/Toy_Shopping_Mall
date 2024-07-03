@@ -1,7 +1,7 @@
 package com.example.shopping_mall.entity;
 
-import com.example.shopping_mall.dto.product.ProductCreateDto;
-import com.example.shopping_mall.dto.product.ProductUpdateDto;
+import com.example.shopping_mall.dto.product.request.ProductCreateDto;
+import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;
 import jakarta.persistence.*;

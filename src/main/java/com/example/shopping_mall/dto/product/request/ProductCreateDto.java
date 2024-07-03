@@ -1,4 +1,4 @@
-package com.example.shopping_mall.dto.product;
+package com.example.shopping_mall.dto.product.request;
 
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductUpdateDto {
+public class ProductCreateDto {
 
-    private Long productId;
+    private String loginId;
 
     private BrandName brandName;
 

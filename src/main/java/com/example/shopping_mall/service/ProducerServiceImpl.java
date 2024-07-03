@@ -3,8 +3,9 @@ package com.example.shopping_mall.service;
 import com.example.shopping_mall.common.FileComponent;
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
-import com.example.shopping_mall.dto.product.ProductCreateDto;
-import com.example.shopping_mall.dto.product.ProductUpdateDto;
+import com.example.shopping_mall.dto.product.request.ProductCreateDto;
+import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
+import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.ProductEntity;
 import com.example.shopping_mall.repository.AccountRepository;
@@ -27,8 +28,8 @@ public class ProducerServiceImpl implements ProducerService{
     @Override
     @Transactional
     public void create(ProductCreateDto productCreateDto, MultipartFile multipartFile) {
-
         String loginId = productCreateDto.getLoginId();
+        System.out.println("loginId = " + loginId);
         AccountEntity accountEntity = accountRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
 
@@ -59,6 +60,12 @@ public class ProducerServiceImpl implements ProducerService{
             productEntity.update(productUpdateDto, fileComponent.upload(multipartFile));
         }
 
+    }
+
+    @Override
+    public void delete(ProductDeleteDto productDeleteDto) {
+        Long productId = productDeleteDto.getProductId();
+        productRepository.deleteById(productId);
     }
 
     private ProductEntity createProductEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String uploadPath) {
