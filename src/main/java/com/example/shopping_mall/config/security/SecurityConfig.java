@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/account/**").permitAll()
-                        .requestMatchers("/product/**").hasRole(AccountType.USER.toString())
+                        .requestMatchers("/consumer/**").hasRole(AccountType.USER.toString())
+                        .requestMatchers("/producer/**").hasRole(AccountType.ADMIN.toString())
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
