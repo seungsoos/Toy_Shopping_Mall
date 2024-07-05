@@ -69,13 +69,6 @@ public class AccountRepositoryCustomImpl implements AccountRepositoryCustom{
         return PageableExecutionUtils.getPage(dtoList, pageable,() -> countQuery);
     }
 
-//    private BooleanExpression searchBrandName(BrandName brandName) {
-//
-//        if (Objects.nonNull(BrandName.searchForList(brandName))) {
-//            return productEntity.brandName.eq(brandName);
-//        }
-//        return null;
-//    }
 
 
 }
