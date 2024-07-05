@@ -1,4 +1,4 @@
-package com.example.shopping_mall.dto.account.response;
+package com.example.shopping_mall.dto.product.response;
 
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;

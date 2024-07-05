@@ -1,7 +1,7 @@
 package com.example.shopping_mall.repository;
 
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
-import com.example.shopping_mall.dto.account.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.dto.common.QueryDslSearchCond;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
@@ -25,8 +25,6 @@ public class AccountRepositoryCustomImpl implements AccountRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     public Page<ProductListDto> findAccountAndProductsByAccountId(ProductSearchDto productListDto, Pageable pageable) {
-        System.out.println("productListDto = " + productListDto);
-
         List<ProductListDto> dtoList = new ArrayList<>(queryFactory
                 .from(accountEntity)
                 .innerJoin(accountEntity.productEntity, productEntity)

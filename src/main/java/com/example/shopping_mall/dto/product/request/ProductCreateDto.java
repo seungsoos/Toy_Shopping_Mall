@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductCreateDto {
 
-    private String loginId;
+    private Long accountId;
 
     private BrandName brandName;
 
