@@ -3,7 +3,10 @@ package com.example.shopping_mall.entity;
 import com.example.shopping_mall.dto.account.request.AccountSignupDto;
 import com.example.shopping_mall.entity.enums.AccountType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -1,12 +1,21 @@
 package com.example.shopping_mall.controller;
 
+import com.example.shopping_mall.dto.account.request.ProductSearchDto;
+import com.example.shopping_mall.dto.account.response.ProductListDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
+import com.example.shopping_mall.entity.enums.BrandName;
+import com.example.shopping_mall.entity.enums.ProductType;
 import com.example.shopping_mall.service.ProducerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/producer")
@@ -33,4 +42,31 @@ public class ProducerController {
         producerService.delete(productDeleteDto);
     }
 
+    @GetMapping("list")
+    public ResponseEntity<Page<ProductListDto>> findByProductList(@RequestParam Long accountId,
+                                            @RequestParam(required = false) BrandName brandName,
+                                            @RequestParam(required = false) String name,
+                                            @RequestParam(required = false) ProductType productType,
+                                            @RequestParam(required = false, value = "startDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDtm,
+                                            @RequestParam(required = false, value = "endDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDtm,
+                                            @RequestParam(value = "viewPage", defaultValue = "0") Integer viewPage,
+                                            @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
+    ) {
+        ProductSearchDto productSearchDto = getProductSearchDto(accountId, brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
+        Page<ProductListDto> byProductList = producerService.findByProductList(productSearchDto);
+        return ResponseEntity.ok().body(byProductList);
+    }
+
+    private ProductSearchDto getProductSearchDto(Long accountId, BrandName brandName, String name, ProductType productType, LocalDate startDtm, LocalDate endDtm, Integer viewPage, Integer viewCount) {
+        return ProductSearchDto.builder()
+                .accountId(accountId)
+                .brandName(brandName)
+                .name(name)
+                .productType(productType)
+                .startDtm(startDtm)
+                .endDtm(endDtm)
+                .viewPage(viewPage)
+                .viewCount(viewCount)
+                .build();
+    }
 }

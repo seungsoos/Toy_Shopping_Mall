@@ -3,6 +3,8 @@ package com.example.shopping_mall.service;
 import com.example.shopping_mall.common.FileComponent;
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
+import com.example.shopping_mall.dto.account.request.ProductSearchDto;
+import com.example.shopping_mall.dto.account.response.ProductListDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -11,6 +13,9 @@ import com.example.shopping_mall.entity.ProductEntity;
 import com.example.shopping_mall.repository.AccountRepository;
 import com.example.shopping_mall.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,6 +71,12 @@ public class ProducerServiceImpl implements ProducerService{
     public void delete(ProductDeleteDto productDeleteDto) {
         Long productId = productDeleteDto.getProductId();
         productRepository.deleteById(productId);
+    }
+
+    @Override
+    public Page<ProductListDto> findByProductList(ProductSearchDto productListDto) {
+        Pageable pageable = PageRequest.of(productListDto.getViewPage(), productListDto.getViewCount());
+        return accountRepository.findAccountAndProductsByAccountId(productListDto, pageable);
     }
 
     private ProductEntity createProductEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String uploadPath) {

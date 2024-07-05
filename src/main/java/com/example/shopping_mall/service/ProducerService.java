@@ -1,8 +1,11 @@
 package com.example.shopping_mall.service;
 
+import com.example.shopping_mall.dto.account.request.ProductSearchDto;
+import com.example.shopping_mall.dto.account.response.ProductListDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProducerService {
@@ -12,4 +15,6 @@ public interface ProducerService {
     void update(ProductUpdateDto productUpdateDto, MultipartFile multipartFile);
 
     void delete(ProductDeleteDto productDeleteDto);
+
+    Page<ProductListDto> findByProductList(ProductSearchDto productListDto);
 }
