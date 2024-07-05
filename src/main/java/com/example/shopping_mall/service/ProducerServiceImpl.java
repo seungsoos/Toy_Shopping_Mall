@@ -4,7 +4,8 @@ import com.example.shopping_mall.common.FileComponent;
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
-import com.example.shopping_mall.dto.account.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductDetailDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -12,6 +13,7 @@ import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.ProductEntity;
 import com.example.shopping_mall.repository.AccountRepository;
 import com.example.shopping_mall.repository.ProductRepository;
+import com.example.shopping_mall.repository.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,13 +31,14 @@ public class ProducerServiceImpl implements ProducerService{
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
     private final FileComponent fileComponent;
+    private final ProductMapper productMapper;
 
     @Override
     @Transactional
     public void create(ProductCreateDto productCreateDto, MultipartFile multipartFile) {
-        String loginId = productCreateDto.getLoginId();
-        System.out.println("loginId = " + loginId);
-        AccountEntity accountEntity = accountRepository.findByLoginId(loginId)
+
+        Long accountId = productCreateDto.getAccountId();
+        AccountEntity accountEntity = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
 
         ProductEntity productEntity;
@@ -77,6 +80,18 @@ public class ProducerServiceImpl implements ProducerService{
     public Page<ProductListDto> findByProductList(ProductSearchDto productListDto) {
         Pageable pageable = PageRequest.of(productListDto.getViewPage(), productListDto.getViewCount());
         return accountRepository.findAccountAndProductsByAccountId(productListDto, pageable);
+    }
+
+    @Override
+    public ProductDetailDto detail(Long accountId, Long productId) {
+        AccountEntity accountEntity = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+
+        ProductEntity productEntity = productRepository.findByProductIdAndAccountEntity(productId, accountEntity)
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+
+        return productMapper.INSTANCE.toProductDetailDto(productEntity, accountEntity);
+
     }
 
     private ProductEntity createProductEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String uploadPath) {

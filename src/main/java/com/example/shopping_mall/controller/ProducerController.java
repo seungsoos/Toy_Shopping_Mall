@@ -1,7 +1,8 @@
 package com.example.shopping_mall.controller;
 
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
-import com.example.shopping_mall.dto.account.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductDetailDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -55,6 +56,13 @@ public class ProducerController {
         ProductSearchDto productSearchDto = getProductSearchDto(accountId, brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
         Page<ProductListDto> byProductList = producerService.findByProductList(productSearchDto);
         return ResponseEntity.ok().body(byProductList);
+    }
+
+    @GetMapping("/detail/{productId}")
+    public ResponseEntity<ProductDetailDto> detail(@RequestParam Long accountId,
+                                                   @PathVariable Long productId) {
+        ProductDetailDto productDetailDto = producerService.detail(accountId, productId);
+        return ResponseEntity.ok().body(productDetailDto);
     }
 
     private ProductSearchDto getProductSearchDto(Long accountId, BrandName brandName, String name, ProductType productType, LocalDate startDtm, LocalDate endDtm, Integer viewPage, Integer viewCount) {
