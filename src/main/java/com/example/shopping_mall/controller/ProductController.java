@@ -8,7 +8,7 @@ import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;
-import com.example.shopping_mall.service.ProducerService;
+import com.example.shopping_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,28 +19,28 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/producer")
+@RequestMapping("/product")
 @RequiredArgsConstructor
-public class ProducerController {
+public class ProductController {
 
-    private final ProducerService producerService;
+    private final ProductService productService;
 
     @PostMapping("/create")
-    public void create(@RequestPart(name = "producerCreateDto") ProductCreateDto productCreateDto,
+    public void create(@RequestPart(name = "productCreateDto") ProductCreateDto productCreateDto,
                        @RequestPart(name = "image_file",required = false) MultipartFile multipartFile) {
-        producerService.create(productCreateDto, multipartFile);
+        productService.create(productCreateDto, multipartFile);
     }
 
 
     @PutMapping("/update")
     public void update(@RequestPart(name = "productUpdateDto") ProductUpdateDto productUpdateDto,
                        @RequestPart(name = "image_file",required = false) MultipartFile multipartFile) {
-        producerService.update(productUpdateDto, multipartFile);
+        productService.update(productUpdateDto, multipartFile);
     }
 
     @DeleteMapping("/delete")
     public void delete(@RequestBody ProductDeleteDto productDeleteDto) {
-        producerService.delete(productDeleteDto);
+        productService.delete(productDeleteDto);
     }
 
     @GetMapping("list")
@@ -54,14 +54,14 @@ public class ProducerController {
                                             @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
     ) {
         ProductSearchDto productSearchDto = getProductSearchDto(accountId, brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
-        Page<ProductListDto> byProductList = producerService.findByProductList(productSearchDto);
+        Page<ProductListDto> byProductList = productService.findByProductList(productSearchDto);
         return ResponseEntity.ok().body(byProductList);
     }
 
     @GetMapping("/detail/{productId}")
     public ResponseEntity<ProductDetailDto> detail(@RequestParam Long accountId,
                                                    @PathVariable Long productId) {
-        ProductDetailDto productDetailDto = producerService.detail(accountId, productId);
+        ProductDetailDto productDetailDto = productService.detail(accountId, productId);
         return ResponseEntity.ok().body(productDetailDto);
     }
 

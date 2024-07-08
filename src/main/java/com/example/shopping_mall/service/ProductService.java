@@ -9,7 +9,7 @@ import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface ProducerService {
+public interface ProductService {
 
     void create(ProductCreateDto productCreateDto, MultipartFile multipartFile);
 

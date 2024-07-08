@@ -26,7 +26,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class ProducerServiceImpl implements ProducerService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
