@@ -27,32 +27,43 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void purchase(OrderPurchaseDto orderPurchaseDto) {
 
-        ProductEntity productEntity = productRepository.findById(orderPurchaseDto.getProductId())
-                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+        ProductEntity productEntity = getProductEntity(orderPurchaseDto);
+        AccountEntity accountEntity = getAccountEntity(orderPurchaseDto);
 
         validateRequestQuantity(orderPurchaseDto, productEntity);
 
-        AccountEntity accountEntity = accountRepository.findById(orderPurchaseDto.getAccountId())
-                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+        OrderEntity orderEntity = builderOrderEntity(orderPurchaseDto, accountEntity);
+        orderEntity.settingAccountEntity(accountEntity);
+        orderRepository.save(orderEntity);
 
-        OrderEntity orderEntity = OrderEntity.builder()
+        ProductOrderEntity productOrderEntity = getProductOrderEntity(productEntity, orderEntity);
+        orderEntity.settingProductOrderEntity(productOrderEntity);
+    }
+
+    private OrderEntity builderOrderEntity(OrderPurchaseDto orderPurchaseDto, AccountEntity accountEntity) {
+        return OrderEntity.builder()
                 .quantity(orderPurchaseDto.getQuantity())
                 .orderType(OrderType.PREPARING)
                 .accountEntity(accountEntity)
                 .build();
+    }
 
-        orderEntity.settingAccountEntity(accountEntity);
+    private AccountEntity getAccountEntity(OrderPurchaseDto orderPurchaseDto) {
+        return accountRepository.findById(orderPurchaseDto.getAccountId())
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+    }
 
-        orderRepository.save(orderEntity);
+    private ProductEntity getProductEntity(OrderPurchaseDto orderPurchaseDto) {
+        return productRepository.findById(orderPurchaseDto.getProductId())
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+    }
 
-        ProductOrderEntity productOrderEntity = ProductOrderEntity
+    private ProductOrderEntity getProductOrderEntity(ProductEntity productEntity, OrderEntity orderEntity) {
+        return ProductOrderEntity
                 .builder()
                 .productEntity(productEntity)
                 .orderEntity(orderEntity)
                 .build();
-
-        orderEntity.settingProductOrderEntity(productOrderEntity);
-
     }
 
     private void validateRequestQuantity(OrderPurchaseDto orderPurchaseDto, ProductEntity productEntity) {
