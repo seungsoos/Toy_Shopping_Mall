@@ -71,18 +71,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void delete(ProductDeleteDto productDeleteDto) {
         Long productId = productDeleteDto.getProductId();
         productRepository.deleteById(productId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProductListDto> findByProductList(ProductSearchDto productListDto) {
         Pageable pageable = PageRequest.of(productListDto.getViewPage(), productListDto.getViewCount());
         return accountRepository.findAccountAndProductsByAccountId(productListDto, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDetailDto detail(Long accountId, Long productId) {
         AccountEntity accountEntity = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
