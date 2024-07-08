@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/account/**").permitAll()
-                        .requestMatchers("/consumer/**").hasRole(AccountType.USER.toString())
+                        .requestMatchers("/order/**").hasRole(AccountType.USER.toString())
                         .requestMatchers("/product/**").hasRole(AccountType.ADMIN.toString())
                         .anyRequest().authenticated()
                 )
