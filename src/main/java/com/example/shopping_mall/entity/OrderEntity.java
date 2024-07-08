@@ -2,10 +2,7 @@ package com.example.shopping_mall.entity;
 
 import com.example.shopping_mall.entity.enums.OrderType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "tb_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"accountEntity", "productOrderEntityList"})
 public class OrderEntity extends BaseEntity {
 
     @Id
@@ -38,6 +36,10 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "orderEntity")
     private List<ProductOrderEntity> productOrderEntityList = new ArrayList<>();
 
+
+    public void updateOrderType(OrderType orderType) {
+        this.orderType = orderType;
+    }
 
     public void settingProductOrderEntity(ProductOrderEntity productOrderEntity) {
         this.productOrderEntityList.add(productOrderEntity);
