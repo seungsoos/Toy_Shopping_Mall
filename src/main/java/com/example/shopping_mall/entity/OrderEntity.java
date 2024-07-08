@@ -3,6 +3,7 @@ package com.example.shopping_mall.entity;
 import com.example.shopping_mall.entity.enums.OrderType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,4 +38,22 @@ public class OrderEntity extends BaseEntity {
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "orderEntity")
     private List<ProductOrderEntity> productOrderEntityList = new ArrayList<>();
 
+
+    public void settingProductOrderEntity(ProductOrderEntity productOrderEntity) {
+        this.productOrderEntityList.add(productOrderEntity);
+        accountEntity.settingOrderEntity(this);
+    }
+
+
+    public void settingAccountEntity(AccountEntity accountEntity) {
+        this.accountEntity = accountEntity;
+        accountEntity.settingOrderEntity(this);
+    }
+
+    @Builder
+    public OrderEntity(Long quantity, OrderType orderType, AccountEntity accountEntity) {
+        this.quantity = quantity;
+        this.orderType = orderType;
+        this.accountEntity = accountEntity;
+    }
 }

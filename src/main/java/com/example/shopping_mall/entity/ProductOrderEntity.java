@@ -1,10 +1,7 @@
 package com.example.shopping_mall.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -27,4 +24,12 @@ public class ProductOrderEntity extends BaseEntity {
     @JoinColumn(name = "order_id")
     private OrderEntity orderEntity;
 
+    public void settingOrderEntity(OrderEntity orderEntity) {
+        this.orderEntity = orderEntity;
+    }
+    @Builder
+    public ProductOrderEntity(ProductEntity productEntity, OrderEntity orderEntity) {
+        this.productEntity = productEntity;
+        this.orderEntity = orderEntity;
+    }
 }

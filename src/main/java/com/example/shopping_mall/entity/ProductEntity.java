@@ -67,7 +67,6 @@ public class ProductEntity extends BaseEntity {
     public void settingAccountEntity(AccountEntity accountEntity) {
         this.accountEntity = accountEntity;
         accountEntity.settingProductEntity(this);
-
     }
 
     public void settingProductOrderEntity(ProductOrderEntity productOrderEntity) {
@@ -84,5 +83,12 @@ public class ProductEntity extends BaseEntity {
         this.quantity = productUpdateDto.getQuantity();
         this.information = productUpdateDto.getInformation();
         this.imageUrl = imageUrl;
+    }
+
+    public boolean requestQuantityIsLarger(Long requestQuantity) {
+        if (this.quantity < requestQuantity) {
+            return true;
+        }
+        return false;
     }
 }

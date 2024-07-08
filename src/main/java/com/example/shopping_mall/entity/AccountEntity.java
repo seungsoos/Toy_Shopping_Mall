@@ -43,7 +43,10 @@ public class AccountEntity extends BaseEntity implements UserDetails{
     private AccountType accountType;
 
     @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "accountEntity", orphanRemoval = true)
-    private List<ProductEntity> productEntity = new ArrayList<>();
+    private List<ProductEntity> productEntityList = new ArrayList<>();
+
+    @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "accountEntity", orphanRemoval = true)
+    private List<OrderEntity> orderEntityList  = new ArrayList<>();
 
     @Builder
     public AccountEntity(String loginId, String password, AccountType accountType) {
@@ -65,7 +68,10 @@ public class AccountEntity extends BaseEntity implements UserDetails{
     }
 
     public void settingProductEntity(ProductEntity productEntity) {
-        this.productEntity.add(productEntity);
+        this.productEntityList.add(productEntity);
+    }
+    public void settingOrderEntity(OrderEntity orderEntity) {
+        this.orderEntityList.add(orderEntity);
     }
 
 

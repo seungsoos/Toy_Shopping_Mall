@@ -27,7 +27,7 @@ public class AccountRepositoryCustomImpl implements AccountRepositoryCustom{
     public Page<ProductListDto> findAccountAndProductsByAccountId(ProductSearchDto productListDto, Pageable pageable) {
         List<ProductListDto> dtoList = new ArrayList<>(queryFactory
                 .from(accountEntity)
-                .innerJoin(accountEntity.productEntity, productEntity)
+                .innerJoin(accountEntity.productEntityList, productEntity)
                 .on(accountEntity.accountId.eq(productEntity.accountEntity.accountId))
                 .where(
                         accountEntity.accountId.eq(productListDto.getAccountId()),
@@ -53,7 +53,7 @@ public class AccountRepositoryCustomImpl implements AccountRepositoryCustom{
 
         Long countQuery = queryFactory.select(accountEntity.count())
                 .from(accountEntity)
-                .innerJoin(accountEntity.productEntity, productEntity)
+                .innerJoin(accountEntity.productEntityList, productEntity)
                 .on(accountEntity.accountId.eq(productEntity.accountEntity.accountId))
                 .where(
                         accountEntity.accountId.eq(productListDto.getAccountId()),
