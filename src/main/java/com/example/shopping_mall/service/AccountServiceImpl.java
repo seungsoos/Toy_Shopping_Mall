@@ -51,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public void delete(AccountDeleteDto deleteRequestDto) {
         String loginId = deleteRequestDto.getLoginId();
         AccountEntity accountEntity = accountRepository.findByLoginId(loginId)

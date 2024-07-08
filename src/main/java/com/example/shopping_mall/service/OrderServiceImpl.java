@@ -3,6 +3,7 @@ package com.example.shopping_mall.service;
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
+import com.example.shopping_mall.dto.order.response.OrderDetailDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.OrderEntity;
 import com.example.shopping_mall.entity.ProductEntity;
@@ -11,9 +12,12 @@ import com.example.shopping_mall.entity.enums.OrderType;
 import com.example.shopping_mall.repository.AccountRepository;
 import com.example.shopping_mall.repository.OrderRepository;
 import com.example.shopping_mall.repository.ProductRepository;
+import com.example.shopping_mall.repository.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
+    private final OrderMapper orderMapper;
 
     @Override
     @Transactional
@@ -38,6 +43,27 @@ public class OrderServiceImpl implements OrderService {
 
         ProductOrderEntity productOrderEntity = getProductOrderEntity(productEntity, orderEntity);
         orderEntity.settingProductOrderEntity(productOrderEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderDetailDto detail(Long orderId, Long accountId) {
+        OrderEntity orderEntity = getOrderEntity(orderId);
+        validateAccountId(accountId, orderEntity);
+
+        return orderMapper.INSTANCE.toOrderDetailDto(orderEntity);
+    }
+
+    private OrderEntity getOrderEntity(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+    }
+
+
+    private void validateAccountId(Long accountId, OrderEntity orderEntity) {
+        if (!Objects.equals(orderEntity.getAccountEntity().getAccountId(), accountId)) {
+            throw new RootException(ResultCodeType.SERVER_ERROR_4S000000);
+        }
     }
 
     private OrderEntity builderOrderEntity(OrderPurchaseDto orderPurchaseDto, AccountEntity accountEntity) {
