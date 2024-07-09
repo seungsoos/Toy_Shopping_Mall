@@ -5,11 +5,12 @@ import com.example.shopping_mall.dto.order.request.OrderCancelDto;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
 import com.example.shopping_mall.dto.order.request.OrderUpdateDto;
 import com.example.shopping_mall.dto.order.response.OrderDetailDto;
-import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
+import com.example.shopping_mall.dto.product.response.ProductDetailDto;
 import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.entity.enums.BrandName;
 import com.example.shopping_mall.entity.enums.ProductType;
 import com.example.shopping_mall.service.OrderService;
+import com.example.shopping_mall.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class OrderController {
 
+    private final ProductService productService;
     private final OrderService orderService;
 
     /**
@@ -38,13 +40,18 @@ public class OrderController {
                                                                                 @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
     ) {
         ProductSearchDto productSearchDto = getProductSearchDto(brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
-        Page<ProductListDto> productDtoList = orderService.list(productSearchDto);
+        Page<ProductListDto> productDtoList = productService.findByProductList(productSearchDto);
         return ResponseEntity.ok().body(productDtoList);
     }
 
     /**
      * 상품상세보기
      */
+    @GetMapping("/detail/{productId}")
+    public ResponseEntity<ProductDetailDto> detail(@PathVariable Long productId) {
+        ProductDetailDto productDetailDto = productService.detail(productId);
+        return ResponseEntity.ok().body(productDetailDto);
+    }
 
     /**
      * 상품구매

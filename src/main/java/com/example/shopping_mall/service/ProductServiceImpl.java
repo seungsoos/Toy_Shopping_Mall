@@ -9,6 +9,7 @@ import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountD
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.ProductEntity;
 import com.example.shopping_mall.repository.AccountRepository;
@@ -79,9 +80,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductListByAdminAccountDto> findByProductList(ProductSearchDto productSearchDto) {
+    public Page<ProductListByAdminAccountDto> findAccountAndProductsByAccountId(ProductSearchDto productSearchDto) {
         Pageable pageable = PageRequest.of(productSearchDto.getViewPage(), productSearchDto.getViewCount());
         return productRepository.findAccountAndProductsByAccountId(productSearchDto, pageable);
+    }
+
+    @Override
+    public Page<ProductListDto> findByProductList(ProductSearchDto productSearchDto) {
+        Pageable pageable = PageRequest.of(productSearchDto.getViewPage(), productSearchDto.getViewCount());
+        return productRepository.findByProductSearch(productSearchDto, pageable);
     }
 
     @Override
@@ -93,8 +100,17 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity productEntity = productRepository.findByProductIdAndAccountEntity(productId, accountEntity)
                 .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
 
-        return productMapper.INSTANCE.toProductDetailDto(productEntity, accountEntity);
+        return productMapper.INSTANCE.toProductAndAdminDetailDto(productEntity, accountEntity);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductDetailDto detail(Long productId) {
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+
+        return productMapper.INSTANCE.toProductDetailDto(productEntity);
     }
 
     private ProductEntity createProductEntity(ProductCreateDto productCreateDto, AccountEntity accountEntity, String uploadPath) {

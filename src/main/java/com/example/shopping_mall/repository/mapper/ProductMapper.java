@@ -1,7 +1,9 @@
 package com.example.shopping_mall.repository.mapper;
 
+import com.example.shopping_mall.dto.order.response.OrderDetailDto;
 import com.example.shopping_mall.dto.product.response.ProductDetailDto;
 import com.example.shopping_mall.entity.AccountEntity;
+import com.example.shopping_mall.entity.OrderEntity;
 import com.example.shopping_mall.entity.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,6 +25,8 @@ public interface ProductMapper {
             @Mapping(source = "productEntity.information", target = "information"),
             @Mapping(source = "productEntity.imageUrl", target = "imageUrl")
     })
-    ProductDetailDto toProductDetailDto(ProductEntity productEntity, AccountEntity accountEntity);
+    ProductDetailDto toProductAndAdminDetailDto(ProductEntity productEntity, AccountEntity accountEntity);
+
+    ProductDetailDto toProductDetailDto(ProductEntity productEntity);
 }
 

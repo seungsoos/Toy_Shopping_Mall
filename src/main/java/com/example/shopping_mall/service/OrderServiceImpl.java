@@ -81,13 +81,6 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.updateOrderType(OrderType.CANCEL);
     }
 
-    @Override
-    public Page<ProductListDto> list(ProductSearchDto productSearchDto) {
-        Pageable pageable = PageRequest.of(productSearchDto.getViewPage(), productSearchDto.getViewCount());
-        return productRepository.findByProductSearch(productSearchDto, pageable);
-    }
-
-
     private void isNotPreparing(OrderEntity orderEntity) {
         if (orderEntity.isNotPreparing()) {
             throw new RootException(ResultCodeType.SERVER_ERROR_ORDER_TYPE_IS_NOT_PREPARING);

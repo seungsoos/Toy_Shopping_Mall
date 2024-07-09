@@ -54,7 +54,7 @@ public class ProductController {
                                                                                 @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
     ) {
         ProductSearchDto productSearchDto = getProductSearchDto(accountId, brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
-        Page<ProductListByAdminAccountDto> byProductList = productService.findByProductList(productSearchDto);
+        Page<ProductListByAdminAccountDto> byProductList = productService.findAccountAndProductsByAccountId(productSearchDto);
         return ResponseEntity.ok().body(byProductList);
     }
 
