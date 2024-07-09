@@ -2,7 +2,9 @@ package com.example.shopping_mall.service;
 
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
+import com.example.shopping_mall.dto.order.request.OrderCancelDto;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
+import com.example.shopping_mall.dto.order.request.OrderUpdateDto;
 import com.example.shopping_mall.dto.order.response.OrderDetailDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.OrderEntity;
@@ -52,6 +54,32 @@ public class OrderServiceImpl implements OrderService {
         validateAccountId(accountId, orderEntity);
 
         return orderMapper.INSTANCE.toOrderDetailDto(orderEntity);
+    }
+
+    @Override
+    @Transactional
+    public void update(OrderUpdateDto orderUpdateDto) {
+        OrderEntity orderEntity = orderRepository.findById(orderUpdateDto.getOrderId())
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+        isNotPreparing(orderEntity);
+        orderEntity.updateQuantity(orderUpdateDto.getQuantity());
+    }
+
+    @Override
+    @Transactional
+    public void cancel(OrderCancelDto orderCancelDto) {
+        OrderEntity orderEntity = orderRepository.findById(orderCancelDto.getOrderId())
+                .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
+
+        isNotPreparing(orderEntity);
+        orderEntity.updateOrderType(OrderType.CANCEL);
+    }
+
+
+    private void isNotPreparing(OrderEntity orderEntity) {
+        if (orderEntity.isNotPreparing()) {
+            throw new RootException(ResultCodeType.SERVER_ERROR_ORDER_TYPE_IS_NOT_PREPARING);
+        }
     }
 
     private OrderEntity getOrderEntity(Long orderId) {

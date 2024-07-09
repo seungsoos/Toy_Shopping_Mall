@@ -16,6 +16,7 @@ public enum ResultCodeType {
     SERVER_ERROR_EXISTS_NICK_NAME("4S000003", "이미 존재하는 닉네임 입니다."),
     SERVER_ERROR_LOGIN_ID_NOT_EQUALS("4S000004", "존재하지 않는 아이디입니다."),
     SERVER_ERROR_REQUEST_QUANTITY("4S000005", "상품의 수량보다 더 많은 요청입니다."),
+    SERVER_ERROR_ORDER_TYPE_IS_NOT_PREPARING("4S000006", "배송이후 상품 수정 및 취소는 불가합니다."),
 
 
     JWT_TOKEN_ERROR("4S000100",  "유효하지않는 토큰입니다."),

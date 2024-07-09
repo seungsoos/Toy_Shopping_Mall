@@ -58,4 +58,15 @@ public class OrderEntity extends BaseEntity {
         this.orderType = orderType;
         this.accountEntity = accountEntity;
     }
+
+    public void updateQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
+    public boolean isNotPreparing() {
+        if (OrderType.PREPARING != this.orderType) {
+            return true;
+        }
+        return false;
+    }
 }

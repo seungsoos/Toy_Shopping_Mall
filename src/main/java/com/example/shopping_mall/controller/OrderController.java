@@ -1,10 +1,11 @@
 package com.example.shopping_mall.controller;
 
+import com.example.shopping_mall.dto.order.request.OrderCancelDto;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
+import com.example.shopping_mall.dto.order.request.OrderUpdateDto;
 import com.example.shopping_mall.dto.order.response.OrderDetailDto;
 import com.example.shopping_mall.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,16 +44,24 @@ public class OrderController {
     }
 
     /**
-     * 상품 구매 수정 / 취소
+     * 상품 구매 수정
      *
-     * 수정시 OrderType - PREPARING 만 취소가 가능함.
+     * OrderType - PREPARING 만 수정이 가능함.
      */
+    @PutMapping("/update")
+    public void update(@RequestBody OrderUpdateDto orderUpdateDto) {
+        orderService.update(orderUpdateDto);
+    }
 
     /**
-     * 상품 취소
+     * 상품 구매 취소
      *
-     * 취소시 OrderType - PREPARING 만 취소가 가능함.
-     *
+     * OrderType - PREPARING 만 취소가 가능함.
      */
+    @PutMapping("/cancel")
+    public void cancel(@RequestBody OrderCancelDto orderCancelDto) {
+        orderService.cancel(orderCancelDto);
+    }
+
 
 }
