@@ -20,7 +20,7 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 
 
 @RequiredArgsConstructor
-public class AccountRepositoryCustomImpl implements AccountRepositoryCustom{
+public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Page<ProductListDto> findByProductList(ProductSearchDto productListDto) {
         Pageable pageable = PageRequest.of(productListDto.getViewPage(), productListDto.getViewCount());
-        return accountRepository.findAccountAndProductsByAccountId(productListDto, pageable);
+        return productRepository.findAccountAndProductsByAccountId(productListDto, pageable);
     }
 
     @Override

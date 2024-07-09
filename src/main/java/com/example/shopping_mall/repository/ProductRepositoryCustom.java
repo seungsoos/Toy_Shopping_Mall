@@ -5,7 +5,7 @@ import com.example.shopping_mall.dto.product.response.ProductListDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface AccountRepositoryCustom {
+public interface ProductRepositoryCustom {
 
     Page<ProductListDto> findAccountAndProductsByAccountId(ProductSearchDto productListDto, Pageable pageable);
 
