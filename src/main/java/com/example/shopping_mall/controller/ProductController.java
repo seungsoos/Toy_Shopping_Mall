@@ -2,7 +2,7 @@ package com.example.shopping_mall.controller;
 
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
 import com.example.shopping_mall.dto.product.response.ProductDetailDto;
-import com.example.shopping_mall.dto.product.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -44,17 +44,17 @@ public class ProductController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<ProductListDto>> findByProductList(@RequestParam Long accountId,
-                                            @RequestParam(required = false) BrandName brandName,
-                                            @RequestParam(required = false) String name,
-                                            @RequestParam(required = false) ProductType productType,
-                                            @RequestParam(required = false, value = "startDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDtm,
-                                            @RequestParam(required = false, value = "endDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDtm,
-                                            @RequestParam(value = "viewPage", defaultValue = "0") Integer viewPage,
-                                            @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
+    public ResponseEntity<Page<ProductListByAdminAccountDto>> findByProductList(@RequestParam Long accountId,
+                                                                                @RequestParam(required = false) BrandName brandName,
+                                                                                @RequestParam(required = false) String name,
+                                                                                @RequestParam(required = false) ProductType productType,
+                                                                                @RequestParam(required = false, value = "startDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDtm,
+                                                                                @RequestParam(required = false, value = "endDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDtm,
+                                                                                @RequestParam(value = "viewPage", defaultValue = "0") Integer viewPage,
+                                                                                @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
     ) {
         ProductSearchDto productSearchDto = getProductSearchDto(accountId, brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
-        Page<ProductListDto> byProductList = productService.findByProductList(productSearchDto);
+        Page<ProductListByAdminAccountDto> byProductList = productService.findByProductList(productSearchDto);
         return ResponseEntity.ok().body(byProductList);
     }
 

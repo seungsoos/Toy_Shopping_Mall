@@ -2,7 +2,7 @@ package com.example.shopping_mall.service;
 
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
 import com.example.shopping_mall.dto.product.response.ProductDetailDto;
-import com.example.shopping_mall.dto.product.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -17,7 +17,7 @@ public interface ProductService {
 
     void delete(ProductDeleteDto productDeleteDto);
 
-    Page<ProductListDto> findByProductList(ProductSearchDto productListDto);
+    Page<ProductListByAdminAccountDto> findByProductList(ProductSearchDto productListDto);
 
     ProductDetailDto detail(Long accountId, Long productId);
 }

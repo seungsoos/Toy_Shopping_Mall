@@ -1,13 +1,22 @@
 package com.example.shopping_mall.controller;
 
+import com.example.shopping_mall.dto.account.request.ProductSearchDto;
 import com.example.shopping_mall.dto.order.request.OrderCancelDto;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
 import com.example.shopping_mall.dto.order.request.OrderUpdateDto;
 import com.example.shopping_mall.dto.order.response.OrderDetailDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
+import com.example.shopping_mall.entity.enums.BrandName;
+import com.example.shopping_mall.entity.enums.ProductType;
 import com.example.shopping_mall.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/order")
@@ -16,10 +25,22 @@ public class OrderController {
 
     private final OrderService orderService;
 
-
     /**
      * 상품 조회 / 검색
      */
+    @GetMapping("/list")
+    public ResponseEntity<Page<ProductListDto>> findByProductList(@RequestParam(required = false) BrandName brandName,
+                                                                                @RequestParam(required = false) String name,
+                                                                                @RequestParam(required = false) ProductType productType,
+                                                                                @RequestParam(required = false, value = "startDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDtm,
+                                                                                @RequestParam(required = false, value = "endDtm") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDtm,
+                                                                                @RequestParam(value = "viewPage", defaultValue = "0") Integer viewPage,
+                                                                                @RequestParam(value = "viewCount", defaultValue = "20") Integer viewCount
+    ) {
+        ProductSearchDto productSearchDto = getProductSearchDto(brandName, name, productType, startDtm, endDtm, viewPage, viewCount);
+        Page<ProductListDto> productDtoList = orderService.list(productSearchDto);
+        return ResponseEntity.ok().body(productDtoList);
+    }
 
     /**
      * 상품상세보기
@@ -63,5 +84,15 @@ public class OrderController {
         orderService.cancel(orderCancelDto);
     }
 
-
+    private ProductSearchDto getProductSearchDto(BrandName brandName, String name, ProductType productType, LocalDate startDtm, LocalDate endDtm, Integer viewPage, Integer viewCount) {
+        return ProductSearchDto.builder()
+                .brandName(brandName)
+                .name(name)
+                .productType(productType)
+                .startDtm(startDtm)
+                .endDtm(endDtm)
+                .viewPage(viewPage)
+                .viewCount(viewCount)
+                .build();
+    }
 }

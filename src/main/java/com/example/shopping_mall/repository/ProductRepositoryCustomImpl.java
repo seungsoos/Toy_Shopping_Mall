@@ -1,8 +1,9 @@
 package com.example.shopping_mall.repository;
 
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
-import com.example.shopping_mall.dto.product.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
 import com.example.shopping_mall.dto.common.QueryDslSearchCond;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,24 +25,26 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public Page<ProductListDto> findAccountAndProductsByAccountId(ProductSearchDto productListDto, Pageable pageable) {
-        List<ProductListDto> dtoList = new ArrayList<>(queryFactory
+    public Page<ProductListByAdminAccountDto> findAccountAndProductsByAccountId(ProductSearchDto productSearchDto, Pageable pageable) {
+        List<ProductListByAdminAccountDto> content = new ArrayList<>(queryFactory
                 .from(accountEntity)
                 .innerJoin(accountEntity.productEntityList, productEntity)
                 .on(accountEntity.accountId.eq(productEntity.accountEntity.accountId))
                 .where(
-                        accountEntity.accountId.eq(productListDto.getAccountId()),
-                        QueryDslSearchCond.searchBrandName(productListDto.getBrandName()),
-                        QueryDslSearchCond.searchProductType(productListDto.getProductType()),
-                        QueryDslSearchCond.searchName(productListDto.getName()),
-                        QueryDslSearchCond.searchByDateRange(productListDto.getStartDtm(), productListDto.getEndDtm())
+                        accountEntity.accountId.eq(productSearchDto.getAccountId()),
+                        QueryDslSearchCond.searchBrandName(productSearchDto.getBrandName()),
+                        QueryDslSearchCond.searchProductType(productSearchDto.getProductType()),
+                        QueryDslSearchCond.searchName(productSearchDto.getName()),
+                        QueryDslSearchCond.searchByDateRange(productSearchDto.getStartDtm(), productSearchDto.getEndDtm())
                 )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .transform(
                         groupBy(accountEntity.accountId).as(
-                                Projections.constructor(ProductListDto.class,
+                                Projections.constructor(ProductListByAdminAccountDto.class,
                                         accountEntity.accountId,
                                         accountEntity.loginId,
-                                        GroupBy.list(Projections.constructor(ProductListDto.ProductAccountDto.class,
+                                        GroupBy.list(Projections.constructor(ProductListByAdminAccountDto.ProductAccountDto.class,
                                                 productEntity.productId,
                                                 productEntity.brandName,
                                                 productEntity.name,
@@ -49,24 +52,62 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                                                 productEntity.quantity,
                                                 productEntity.information))
                                 )
-                        )).values());
+                        ))
+                .values());
 
         Long countQuery = queryFactory.select(accountEntity.count())
                 .from(accountEntity)
                 .innerJoin(accountEntity.productEntityList, productEntity)
                 .on(accountEntity.accountId.eq(productEntity.accountEntity.accountId))
                 .where(
-                        accountEntity.accountId.eq(productListDto.getAccountId()),
-                        QueryDslSearchCond.searchBrandName(productListDto.getBrandName()),
-                        QueryDslSearchCond.searchProductType(productListDto.getProductType()),
-                        QueryDslSearchCond.searchName(productListDto.getName()),
-                        QueryDslSearchCond.searchByDateRange(productListDto.getStartDtm(), productListDto.getEndDtm())
+                        accountEntity.accountId.eq(productSearchDto.getAccountId()),
+                        QueryDslSearchCond.searchBrandName(productSearchDto.getBrandName()),
+                        QueryDslSearchCond.searchProductType(productSearchDto.getProductType()),
+                        QueryDslSearchCond.searchName(productSearchDto.getName()),
+                        QueryDslSearchCond.searchByDateRange(productSearchDto.getStartDtm(), productSearchDto.getEndDtm())
+                )
+
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(content, pageable,() -> countQuery);
+    }
+
+    @Override
+    public Page<ProductListDto> findByProductSearch(ProductSearchDto productSearchDto, Pageable pageable) {
+
+        List<ProductListDto> content = queryFactory
+                .select(Projections.constructor(ProductListDto.class,
+                        productEntity.productId,
+                        productEntity.brandName,
+                        productEntity.name,
+                        productEntity.productType,
+                        productEntity.quantity,
+                        productEntity.information
+                        )
+                )
+                .from(productEntity)
+                .where(
+                        QueryDslSearchCond.searchBrandName(productSearchDto.getBrandName()),
+                        QueryDslSearchCond.searchProductType(productSearchDto.getProductType()),
+                        QueryDslSearchCond.searchName(productSearchDto.getName()),
+                        QueryDslSearchCond.searchByDateRange(productSearchDto.getStartDtm(), productSearchDto.getEndDtm())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long countQuery = queryFactory.select(productEntity.count())
+                .from(productEntity)
+                .where(
+                        QueryDslSearchCond.searchBrandName(productSearchDto.getBrandName()),
+                        QueryDslSearchCond.searchProductType(productSearchDto.getProductType()),
+                        QueryDslSearchCond.searchName(productSearchDto.getName()),
+                        QueryDslSearchCond.searchByDateRange(productSearchDto.getStartDtm(), productSearchDto.getEndDtm())
                 )
                 .fetchOne();
 
-        return PageableExecutionUtils.getPage(dtoList, pageable,() -> countQuery);
+        return PageableExecutionUtils.getPage(content, pageable,() -> countQuery);
     }
-
 
 
 }

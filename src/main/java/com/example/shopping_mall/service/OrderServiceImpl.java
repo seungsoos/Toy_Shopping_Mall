@@ -2,10 +2,13 @@ package com.example.shopping_mall.service;
 
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
+import com.example.shopping_mall.dto.account.request.ProductSearchDto;
 import com.example.shopping_mall.dto.order.request.OrderCancelDto;
 import com.example.shopping_mall.dto.order.request.OrderPurchaseDto;
 import com.example.shopping_mall.dto.order.request.OrderUpdateDto;
 import com.example.shopping_mall.dto.order.response.OrderDetailDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
+import com.example.shopping_mall.dto.product.response.ProductListDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.entity.OrderEntity;
 import com.example.shopping_mall.entity.ProductEntity;
@@ -16,6 +19,9 @@ import com.example.shopping_mall.repository.OrderRepository;
 import com.example.shopping_mall.repository.ProductRepository;
 import com.example.shopping_mall.repository.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +79,12 @@ public class OrderServiceImpl implements OrderService {
 
         isNotPreparing(orderEntity);
         orderEntity.updateOrderType(OrderType.CANCEL);
+    }
+
+    @Override
+    public Page<ProductListDto> list(ProductSearchDto productSearchDto) {
+        Pageable pageable = PageRequest.of(productSearchDto.getViewPage(), productSearchDto.getViewCount());
+        return productRepository.findByProductSearch(productSearchDto, pageable);
     }
 
 

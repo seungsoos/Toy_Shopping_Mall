@@ -5,7 +5,7 @@ import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
 import com.example.shopping_mall.dto.account.request.ProductSearchDto;
 import com.example.shopping_mall.dto.product.response.ProductDetailDto;
-import com.example.shopping_mall.dto.product.response.ProductListDto;
+import com.example.shopping_mall.dto.product.response.ProductListByAdminAccountDto;
 import com.example.shopping_mall.dto.product.request.ProductCreateDto;
 import com.example.shopping_mall.dto.product.request.ProductDeleteDto;
 import com.example.shopping_mall.dto.product.request.ProductUpdateDto;
@@ -79,9 +79,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductListDto> findByProductList(ProductSearchDto productListDto) {
-        Pageable pageable = PageRequest.of(productListDto.getViewPage(), productListDto.getViewCount());
-        return productRepository.findAccountAndProductsByAccountId(productListDto, pageable);
+    public Page<ProductListByAdminAccountDto> findByProductList(ProductSearchDto productSearchDto) {
+        Pageable pageable = PageRequest.of(productSearchDto.getViewPage(), productSearchDto.getViewCount());
+        return productRepository.findAccountAndProductsByAccountId(productSearchDto, pageable);
     }
 
     @Override
