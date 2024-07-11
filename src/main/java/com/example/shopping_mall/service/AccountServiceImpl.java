@@ -2,11 +2,14 @@ package com.example.shopping_mall.service;
 
 import com.example.shopping_mall.common.ResultCodeType;
 import com.example.shopping_mall.common.exception.RootException;
+import com.example.shopping_mall.config.security.CustomUserDetailsService;
 import com.example.shopping_mall.config.security.jwt.JwtToken;
 import com.example.shopping_mall.config.security.jwt.JwtTokenProvider;
 import com.example.shopping_mall.dto.account.request.AccountDeleteDto;
 import com.example.shopping_mall.dto.account.request.AccountLoginDto;
 import com.example.shopping_mall.dto.account.request.AccountSignupDto;
+import com.example.shopping_mall.dto.account.request.TokenRequestDto;
+import com.example.shopping_mall.dto.account.response.TokenResponseDto;
 import com.example.shopping_mall.entity.AccountEntity;
 import com.example.shopping_mall.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional(readOnly = true)
     public JwtToken login(AccountLoginDto accountLoginDto) {
@@ -57,6 +62,22 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity accountEntity = accountRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new RootException(ResultCodeType.SERVER_ERROR_4S000000));
         accountRepository.delete(accountEntity);
+    }
+
+    @Override
+    public TokenResponseDto refreshToken(TokenRequestDto tokenRequestDto) {
+        String refreshToken = tokenRequestDto.getRefreshToken();
+
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new RootException(ResultCodeType.JWT_TOKEN_ERROR);
+        }
+
+        String loginId = jwtTokenProvider.parseClaims(refreshToken).getSubject();
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+
+        String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
+        return new TokenResponseDto(newAccessToken);
     }
 
 

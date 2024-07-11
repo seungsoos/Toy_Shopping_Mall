@@ -4,8 +4,11 @@ import com.example.shopping_mall.config.security.jwt.JwtToken;
 import com.example.shopping_mall.dto.account.request.AccountDeleteDto;
 import com.example.shopping_mall.dto.account.request.AccountLoginDto;
 import com.example.shopping_mall.dto.account.request.AccountSignupDto;
+import com.example.shopping_mall.dto.account.request.TokenRequestDto;
+import com.example.shopping_mall.dto.account.response.TokenResponseDto;
 import com.example.shopping_mall.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,4 +34,9 @@ public class AccountController {
         accountService.delete(deleteRequestDto);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponseDto> refreshToken(@RequestBody TokenRequestDto tokenRequestDto) {
+        TokenResponseDto tokenResponseDto = accountService.refreshToken(tokenRequestDto);
+        return ResponseEntity.ok().body(tokenResponseDto);
+    }
 }
